@@ -1,0 +1,167 @@
+# Birthday Celebration Token (BCT) 🎉
+
+A social token system built on the Stacks blockchain for celebrating birthdays with token gifts and personalized messages. Users can register their birthdays, send celebratory tokens with messages to birthday celebrants, and claim special birthday rewards.
+
+## Features
+
+###  Birthday Management
+- Register your birthday (month and day)
+- Modify your registered birthday
+- View birthday status and registration info
+
+###  Token Gifting
+- Send celebration tokens to users on their birthday
+- Include personalized birthday messages with token gifts
+- Daily interaction limits prevent spam
+
+###  Birthday Rewards
+- Claim special birthday bonus tokens on your birthday
+- Automatic reward distribution system
+- One reward claim per day
+
+###  Token Operations
+- Fungible token with 6 decimal places
+- Token minting and burning capabilities
+- Standard token transfer functionality
+- Balance tracking and metadata support
+
+## Token Details
+
+- **Name**: Birthday Celebration Token
+- **Symbol**: BCT
+- **Decimals**: 6
+- **Birthday Bonus**: 1 BCT (1,000,000 micro-tokens)
+
+## Smart Contract Functions
+
+### Public Functions
+
+#### Birthday Management
+- `register-user-birthday(birth-month, birth-day)` - Register your birthday
+- `modify-registered-birthday(new-birth-month, new-birth-day)` - Update your birthday
+
+#### Token Operations
+- `mint-celebration-tokens(token-amount, recipient-principal)` - Mint tokens (admin only)
+- `burn-celebration-tokens(token-amount)` - Burn your tokens
+- `transfer-celebration-tokens(token-amount, sender-principal, recipient-principal, transfer-memo)` - Transfer tokens
+
+#### Birthday Celebrations
+- `send-birthday-celebration(recipient-principal, celebration-amount, birthday-message)` - Send birthday tokens with message
+- `claim-birthday-reward-tokens()` - Claim your birthday bonus
+
+#### Admin Functions
+- `update-token-metadata-uri(new-uri)` - Update token metadata URI (admin only)
+
+### Read-Only Functions
+
+#### Token Information
+- `get-token-name()` - Get token name
+- `get-token-symbol()` - Get token symbol
+- `get-token-decimals()` - Get decimal places
+- `get-circulating-supply()` - Get total supply
+- `get-token-metadata-uri()` - Get metadata URI
+
+#### Account & Birthday Info
+- `get-account-balance(account-principal)` - Get token balance
+- `get-user-birthday-info(user-principal)` - Get birthday registration info
+- `check-birthday-registration-status(user-principal)` - Check if birthday is registered
+- `get-birthday-status(user-principal)` - Get comprehensive birthday status
+
+#### Interaction Queries
+- `get-celebration-message(sender-principal, recipient-principal, message-block)` - Get birthday message
+- `get-last-interaction-block(sender-principal, recipient-principal)` - Get last interaction block
+- `can-send-birthday-greeting(sender-principal, recipient-principal)` - Check if can send greeting
+- `can-claim-birthday-reward(user-principal)` - Check if can claim reward
+
+## Usage Examples
+
+### 1. Register Your Birthday
+```clarity
+;; Register birthday for March 15th
+(contract-call? .birthday-token register-user-birthday u3 u15)
+```
+
+### 2. Send Birthday Celebration
+```clarity
+;; Send 5 BCT tokens with a birthday message
+(contract-call? .birthday-token send-birthday-celebration 
+  'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM 
+  u5000000 
+  "Happy Birthday! Hope you have a wonderful day!")
+```
+
+### 3. Claim Birthday Reward
+```clarity
+;; Claim your birthday bonus tokens
+(contract-call? .birthday-token claim-birthday-reward-tokens)
+```
+
+### 4. Check Birthday Status
+```clarity
+;; Check if someone's birthday is today and they can claim rewards
+(contract-call? .birthday-token get-birthday-status 
+  'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM)
+```
+
+## Rules & Limitations
+
+### Birthday System
+- Only one birthday registration per user
+- Birthday must be a valid date (month 1-12, day 1-31)
+- February is limited to 29 days (simplified leap year handling)
+
+### Token Gifting Rules
+- Can only send tokens to users on their actual birthday
+- Cannot send tokens to yourself
+- One interaction per sender-recipient pair per day
+- Must have sufficient token balance
+
+### Birthday Rewards
+- Can only claim rewards on your actual birthday
+- One reward claim per day
+- Must have registered birthday first
+
+### Date Calculation
+- Uses Stacks block height for date calculations
+- Assumes 144 blocks per day (approximately 10-minute block times)
+- Simplified 30-day months for demo purposes
+
+## Error Codes
+
+| Code | Error | Description |
+|------|-------|-------------|
+| 100 | ERR-UNAUTHORIZED-ACCESS | Only admin can perform this action |
+| 101 | ERR-INVALID-TOKEN-OWNER | Token owner mismatch |
+| 102 | ERR-INSUFFICIENT-TOKEN-BALANCE | Not enough tokens |
+| 103 | ERR-INVALID-TOKEN-AMOUNT | Invalid token amount |
+| 104 | ERR-BIRTHDAY-NOT-FOUND | Birthday not registered |
+| 105 | ERR-BIRTHDAY-ALREADY-EXISTS | Birthday already registered |
+| 106 | ERR-INVALID-BIRTHDAY-DATE | Invalid date format |
+| 107 | ERR-NOT-BIRTHDAY-TODAY | Not the user's birthday |
+| 108 | ERR-DAILY-GREETING-LIMIT-EXCEEDED | Daily limit reached |
+| 109 | ERR-SELF-GREETING-NOT-ALLOWED | Cannot send to yourself |
+
+## Development Setup
+
+### Prerequisites
+- [Clarinet](https://docs.hiro.so/clarinet) - Stacks smart contract development tool
+- Node.js and npm for testing
+
+### Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd birthday-celebration-token
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Check contract
+clarinet check
+
+# Deploy to devnet
+clarinet deploy --devnet
+```
